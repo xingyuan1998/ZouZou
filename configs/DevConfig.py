@@ -1,0 +1,7 @@
+DEBUG = True
+WTF_CSRF_ENABLED = False
+SECRET_KEY = 'youcannotguessit'
+
+MONGODB_DB = 'ZouZou'
+MONGODB_HOST = '127.0.0.1'
+MONGODB_PORT = 27017
