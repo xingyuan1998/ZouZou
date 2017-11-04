@@ -19,6 +19,9 @@ class User(Common):
     phone = StringField(max_length=64)
     birthday = DateTimeField()
     timestamp = StringField()
+    # 用于验证手机号，
+    # 或者邮箱等验证码等 用于暂时存放验证码 暂时找不到比较好的解决方案
+    code = StringField(max_length=32)
     # 密码的hash值
     password_hash = StringField(max_length=128)
     # 粉丝

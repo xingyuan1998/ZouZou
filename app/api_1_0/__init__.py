@@ -1,11 +1,8 @@
+from flask import Blueprint, jsonify, session
 import datetime
-
-from flask import Blueprint, jsonify
-
 from app.models.user import User
 
 api = Blueprint('api', __name__, url_prefix='/api')
-
 from app.api_1_0 import user
 
 
@@ -16,7 +13,7 @@ def hello():
     # user.age = 12
     # user.timestamp = str(datetime.datetime.now())
     # user.set_save()
-    users = User.objects.first()
+    users = User.objects.all()
     # 检测token是否可用
     # return jsonify({
     #     'status': 200,
@@ -28,12 +25,14 @@ def hello():
     #         "eyJhbGciOiJIUzI1NiIsImlhdCI6MTUwOTcwNDE4NSwiZXhwIjoxNTA5NzA3Nzg1fQ.eyJ0b2tlbiI6IjU5ZmJmNDEyZDIyNDk4MDAyMDBlY2QwZiJ9.Gw4EL3JPyRsZWxRh6upk2IZW2SciTtbzd7ZGqdp_GLg")
     # })
 
-    # users.add_follower("ddsfsdfsfasdf")
-    users.update(pull__followers="ddsfsdfsfasdf")
-    users.followers_num = int(users.followers_num) - 1
-    users.save()
-    users.reload()
+    # # users.add_follower("ddsfsdfsfasdf")
+    # # users.update(pull__followers=)
+    # # users.followers_num = int(users.followers_num) - 1
+    # # users.delete_follower("ddsfsdfsfasdf")
+    # users.save()
+    # users.reload()
     return jsonify(users)
+
 
 
 @api.route('/del/')
