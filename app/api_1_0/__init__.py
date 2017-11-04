@@ -1,9 +1,38 @@
-from flask import Blueprint, jsonify, session
+from flask import Blueprint, jsonify, session, request
 import datetime
 from app.models.user import User
 
 api = Blueprint('api', __name__, url_prefix='/api')
 from app.api_1_0 import user
+
+
+@api.before_request
+def bef_request():
+    '''
+    api 请求之前 验证token 和 手机号是否是同一个人
+    是一个人才能继续进行并把user 放到 g 上
+    :return:
+    '''
+    token = request.values.get('token')
+    phone = request.values.get('phone')
+    if token is None:
+        return jsonify({
+            'status': 400,
+            'des': "token为空"
+        })
+    user = User.objects(phone=phone).first()
+    if user is None:
+        return jsonify({
+            'status': 400,
+            'des': '该用户不存在'
+        })
+    if user.check_token(token=token):
+        g.user = user
+    else:
+        return jsonify({
+            'status': 400,
+            'des': '登录失效，请重新登录'
+        })
 
 
 @api.route('/')
@@ -32,7 +61,6 @@ def hello():
     # users.save()
     # users.reload()
     return jsonify(users)
-
 
 
 @api.route('/del/')
