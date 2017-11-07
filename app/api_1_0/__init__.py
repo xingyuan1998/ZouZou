@@ -1,10 +1,11 @@
-from flask import Blueprint, jsonify, session, request
+from flask import Blueprint, jsonify, session, request, g
 import datetime
 from app.models.user import User
+from itsdangerous import TimedJSONWebSignatureSerializer as Serialozer
 
 api = Blueprint('api', __name__, url_prefix='/api')
 from app.api_1_0 import user
-
+from app.api_1_0 import circleword
 
 @api.before_request
 def bef_request():
@@ -26,7 +27,7 @@ def bef_request():
             'status': 400,
             'des': '该用户不存在'
         })
-    if user.check_token(token=token):
+    if user.check_token(token):
         g.user = user
     else:
         return jsonify({
@@ -68,3 +69,9 @@ def delete():
     user = User.objects.all()
     user.delete()
     return 'delete ok'
+
+
+@api.route('/show/')
+def show():
+    user = User.objects.all()
+    return jsonify(user)

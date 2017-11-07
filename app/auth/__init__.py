@@ -25,7 +25,7 @@ def send_phone_message():
             'des': '用户已经注册了'
         })
     session[phone] = random.randint(1000, 9999)
-    session['last_reg_time'] = datetime.datetime.time()
+    session['last_reg_time'] = str(datetime.datetime.now())
     return str(session[phone])
 
 
@@ -39,6 +39,12 @@ def reg():
     if form.validate_on_submit():
         code = form.code.data
         phone = form.phone.data
+        user = User.objects(phone=phone).first()
+        if user is not None:
+            return jsonify({
+                'status': 400,
+                'des': '该用户已存在'
+            })
         if phone in session and str(session[phone]) == code:
             form = RegForm()
             if form.validate_on_submit():
@@ -49,7 +55,8 @@ def reg():
                 user.set_save()
                 return jsonify({
                     'status': 200,
-                    'data': user
+                    'data': user,
+                    'token': str(str(user.generate_token())[2:-1])
                 })
             return jsonify({
                 'status': 400,
@@ -59,6 +66,10 @@ def reg():
             'status': 400,
             'des': 'code错误'
         })
+    return jsonify({
+        'status': 400,
+        'des': '错误'
+    })
 
 
 @auth.route('/login/', methods=['POST'])

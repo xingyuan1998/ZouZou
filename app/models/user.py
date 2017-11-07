@@ -1,13 +1,14 @@
+import datetime
+
 import bson.json_util
 import json
-from mongoengine import StringField, IntField, DateTimeField, ListField
+from mongoengine import StringField, IntField, DateTimeField, ListField, Document
 from werkzeug.security import generate_password_hash, check_password_hash
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
-from app.models import Common
 from configs.DevConfig import SECRET_KEY
 
 
-class User(Common):
+class User(Document):
     user_id = StringField(max_length=64)
     name = StringField(max_length=32)
     age = IntField(max_value=130, min_value=10)
@@ -18,7 +19,6 @@ class User(Common):
     # 手机号码 到时候要发送短信用
     phone = StringField(max_length=64)
     birthday = DateTimeField()
-    timestamp = StringField()
     # 用于验证手机号，
     # 或者邮箱等验证码等 用于暂时存放验证码 暂时找不到比较好的解决方案
     code = StringField(max_length=32)
@@ -30,7 +30,7 @@ class User(Common):
     # 关注的人
     idol = ListField(StringField())
     idol_num = IntField(default=0)
-
+    timestamp = StringField()
     def set_id(self):
         '''
         重写父类函数
@@ -47,6 +47,7 @@ class User(Common):
         重写父类函数
         :return: void
         '''
+        self.timestamp = str(datetime.datetime.now())
         self.save()
         self.set_id()
 
@@ -86,16 +87,18 @@ class User(Common):
         s = Serializer(SECRET_KEY)
         try:
             data = s.loads(token)
-        except:
+        except Exception:
             return False
         if data['token'] != self.user_id:
             return False
         else:
             return True
 
+    # 设置密码
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
         self.save()
 
+    # 验证密码
     def verify_password(self, password):
         return check_password_hash(self.password_hash, password)
