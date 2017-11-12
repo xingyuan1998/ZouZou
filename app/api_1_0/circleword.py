@@ -1,8 +1,10 @@
+import datetime
 from flask import jsonify, request, g
 
 from app.api_1_0 import api
 from app.forms.circle import CircleWordForm
 from app.models import PostCommon
+from app.models.PubPost import PubPost
 
 
 @api.route('/circle/word/<int:id>', methods=['GET', 'DELETE'])
@@ -67,17 +69,26 @@ def insert_circle():
         circle.title = form.title.data
         circle.content = form.content.data
         circle.permission = request.values.get('permission')
+        circle.author = g.user
+        circle.set_save()
+
         # 进行分类管理 还没有具体实现怎么分配
+        # 这个是好友相关
         if circle.permission == 1:
             print("1")
+
+        # 这个是公开post
         elif circle.permission == 2:
-            print("2")
+            post = PubPost()
+            post.user = g.user
+            post.timestamp = str(datetime.datetime.now())
+            post.post_id = circle.d_id
+            post.save()
+        # 这个是仅自己可见。
         elif circle.permission == -1:
             print("-1")
         else:
             print("else")
-        circle.author = g.user
-        circle.set_save()
         return jsonify({
             'status': 200,
             'des': '新建成功',
