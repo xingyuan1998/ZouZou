@@ -59,8 +59,6 @@ def insert_circle():
         直接设置是公开的就行不需要推送
     好友获取post的时候
         获取公开的 以及私密的
-
-
     :return:
     '''
     form = CircleWordForm()
@@ -68,7 +66,16 @@ def insert_circle():
         circle = PostCommon()
         circle.title = form.title.data
         circle.content = form.content.data
-        circle.permission = form.permission.data
+        circle.permission = request.values.get('permission')
+        # 进行分类管理 还没有具体实现怎么分配
+        if circle.permission == 1:
+            print("1")
+        elif circle.permission == 2:
+            print("2")
+        elif circle.permission == -1:
+            print("-1")
+        else:
+            print("else")
         circle.author = g.user
         circle.set_save()
         return jsonify({
@@ -81,3 +88,12 @@ def insert_circle():
             'status': 400,
             'des': '新建失败'
         })
+
+
+# 测试应用区
+
+@api.route('/circle/word/', methods=['DELETE'])
+def del_all_word():
+    word = PostCommon.objects.all()
+    word.delete()
+    return 'ok'

@@ -15,5 +15,5 @@ class CircleWordForm(FlaskForm):
     )
     permission = IntField(
         'permission',
-        validation=[DataRequired()]
+        validators=[DataRequired()]
     )

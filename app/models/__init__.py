@@ -96,6 +96,7 @@ class PostCommon(Common):
             'hot': self.hot,
             'good': self.good,
             'comments': com,
-            'timestamp': self.timestamp
+            'timestamp': self.timestamp,
+            'permission': self.permission
         }
         return json_obj
