@@ -112,6 +112,7 @@ def get_circle(page=1):
     '''
     # 可以使用form表单先验证一下
     type = request.values.get('type')
+    time = request.values.get('time')
     if type is None:
         return jsonify({
             'status':404,
