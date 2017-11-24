@@ -120,6 +120,7 @@ def get_circle(page=1):
         })
     if type == 1:
         # 查找好友相关的数据
+
         pass
     elif type ==2:
         # 查找公共的相关信息
