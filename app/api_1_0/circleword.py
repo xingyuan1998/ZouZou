@@ -84,11 +84,12 @@ def insert_circle():
             post.timestamp = str(datetime.datetime.now())
             post.post_id = circle.d_id
             post.save()
-        # 这个是仅自己可见。
+        # 这个是仅自己可见。這個請求時候進行過濾
         elif circle.permission == -1:
-            print("-1")
+            pass
         else:
-            print("else")
+            # print("else")其他的東西 到時候再進進行完善
+            pass
         return jsonify({
             'status': 200,
             'des': '新建成功',
@@ -101,7 +102,31 @@ def insert_circle():
         })
 
 
-# 测试应用区
+@api.route('/circle/words/<int:page>',methods=['GET'])
+def get_circle(page=1):
+    '''
+    根据type的不同，请求不同的数据
+    分别为个人，好友，公共
+    :param page: 当前页面的页数，默认为1
+    :return: 返回状态及相关的数据
+    '''
+    # 可以使用form表单先验证一下
+    type = request.values.get('type')
+    if type is None:
+        return jsonify({
+            'status':404,
+            'des':'没有相关类型'
+        })
+    if type == 1:
+        # 查找好友相关的数据
+        pass
+    elif type ==2:
+        # 查找公共的相关信息
+        pass
+    elif type == -1:
+        # 查看自己的相关信息
+        pass
+    pass
 
 @api.route('/circle/word/', methods=['DELETE'])
 def del_all_word():
